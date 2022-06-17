@@ -7,7 +7,7 @@ contract Token {
     string public name = "Ayzat token";
     string public symbol = "ATON";
 
-    uint256 public totalSupply = 100_000;
+    uint256 public totalSupply = 200;
 
     address tokenOwner;
 
@@ -18,9 +18,14 @@ contract Token {
     event Approval(address indexed owner, address indexed to, uint256 value);
     event Transfer(address indexed from, address indexed spender, uint256 value);
 
-    constructor(address creator) {
-        balances[creator] = totalSupply;
-        tokenOwner = creator;
+    modifier onlyOwner {
+        require(msg.sender == tokenOwner, "You don't have privilege");
+        _;
+    }
+
+    constructor() {
+        balances[msg.sender] = totalSupply;
+        tokenOwner = msg.sender;
     }
 
     function transfer(address to, uint256 amount) external returns (bool) {
@@ -54,6 +59,19 @@ contract Token {
         balances[sender] -= amount;
         balances[recipient] += amount;
         emit Transfer(sender, msg.sender, amount);
+        return true;
+    }
+
+    function mint(uint256 emissionValue) external onlyOwner returns (bool) {
+        totalSupply += emissionValue;
+        balances[msg.sender] += emissionValue;
+        return true;
+    }
+
+    function burn(uint256 burnValue) external onlyOwner returns (bool) {
+        require(balances[msg.sender] >= burnValue, "Don't have tokens to burn");
+        totalSupply -= burnValue;
+        balances[msg.sender] -= burnValue;
         return true;
     }
 }

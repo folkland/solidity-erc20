@@ -12,7 +12,7 @@ describe('ATON contract', function () {
     beforeEach(async function() {
         [ owner, addr1, addr2 ] = await ethers.getSigners();
         token = await ethers.getContractFactory("Token");
-        hardhatToken = await token.deploy(owner.getAddress());
+        hardhatToken = await token.deploy();
     })
 
     it('Deployment should assign the total supply of tokens to the owner', async function () {
@@ -63,5 +63,23 @@ describe('ATON contract', function () {
             await hardhatToken.connect(addr2).approve(addr1.getAddress(), 5);
             await expect(hardhatToken.connect(addr1).transferFrom(addr2.getAddress(), owner.getAddress(), 1)).to.be.revertedWith('Sender don\'t have tokens');
         });
-    })
+    });
+
+    describe('Mint and burn', function () {
+        it('Fail use mint or burn another user', async function () {
+            await expect(hardhatToken.connect(addr1).mint(100)).to.be.revertedWith('You don\'t have privilege')
+            await expect(hardhatToken.connect(addr1).burn(100)).to.be.revertedWith('You don\'t have privilege')
+        });
+        it('Mint and burn success', async function () {
+            await hardhatToken.mint(100);
+            expect(await hardhatToken.totalSupply()).to.equal(300);
+            expect(await hardhatToken.totalSupply()).to.equal(await hardhatToken.balanceOf(owner.getAddress()));
+            await hardhatToken.burn(50);
+            expect(await hardhatToken.totalSupply()).to.equal(250);
+            expect(await hardhatToken.totalSupply()).to.equal(await hardhatToken.balanceOf(owner.getAddress()));
+        });
+        it('Fail burn', async function () {
+            await expect(hardhatToken.burn(300)).to.be.revertedWith('Don\'t have tokens to burn')
+        });
+    });
 });
