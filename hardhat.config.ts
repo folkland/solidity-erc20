@@ -1,8 +1,6 @@
 import "@nomiclabs/hardhat-waffle"
 import "@nomiclabs/hardhat-etherscan"
 import {environment} from "./environment/environment";
-// import { HardhatUserConfig } from "hardhat/config";
-// import "tsconfig-paths/register"
 
 const PRIVATE_KEY = environment.walletPrivateKey;
 const INFURA = environment.infuraKey;
