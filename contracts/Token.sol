@@ -1,7 +1,5 @@
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
-
 contract Token {
 
     string public name = "Ayzat token";
@@ -37,12 +35,10 @@ contract Token {
     }
 
     function balanceOf(address account) external view returns (uint256) {
-        require(msg.sender == account, "You can't see this balance");
         return balances[account];
     }
 
     function allowance(address owner, address spender) external view returns (uint256){
-        require(msg.sender == owner || msg.sender == spender, "You can't see this allowance");
         return approveList[owner][spender];
     }
 

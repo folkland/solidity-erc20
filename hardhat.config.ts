@@ -1,6 +1,7 @@
 import "@nomiclabs/hardhat-waffle"
 import "@nomiclabs/hardhat-etherscan"
 import {environment} from "./environment/environment";
+import "./tasks/task"
 
 const PRIVATE_KEY = environment.walletPrivateKey;
 const INFURA = environment.infuraKey;
